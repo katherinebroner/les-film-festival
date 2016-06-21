@@ -112,7 +112,6 @@ $(document).ready(function() {
       if ($(this).parent().siblings(".comment-list").find(".no-comments").length == 0) {
         $(this).parent().siblings(".comment-list").append(response);
       } else {
-        debugger;
         $(this).parent().siblings(".comment-list").find("p").hide();
         $(this).parent().siblings(".comment-list").append(response);
       };
@@ -159,6 +158,22 @@ $(document).ready(function() {
   });
 
   // delete comment from user section
+  $("#list-of-user-reviews").on("click", ".delete-comment-link", function(e) {
+    e.preventDefault();
+    var url = $(e.target).attr("href");
+
+    $.ajax({
+      url: url,
+      type: "GET"
+    }).done(function(response) {
+      if($(this).closest(".review-info").find(".no-comments").length == 1 && $(this).closest(".review-info").find(".comment-list").children().length == 2) {
+        $(this).closest(".review-info").find(".no-comments").show();
+      } else if($(this).closest(".review-info").find(".comment-list").children().length == 1) {
+        $(this).closest(".review-info").find(".comment-list").append("<p class='no-comments'>There are no comments for this review currently!</p>");
+      };
+      $(this).closest(".comment-info").remove();
+    }.bind(this));
+  });
 
   // delete comment from judge section
   $("#list-of-judge-reviews").on("click", ".delete-comment-link", function(e) {
@@ -169,7 +184,12 @@ $(document).ready(function() {
       url: url,
       type: "GET"
     }).done(function(response) {
-      debugger;
-    });
+      if($(this).closest(".review-info").find(".no-comments").length == 1 && $(this).closest(".review-info").find(".comment-list").children().length == 2) {
+        $(this).closest(".review-info").find(".no-comments").show();
+      } else if($(this).closest(".review-info").find(".comment-list").children().length == 1) {
+        $(this).closest(".review-info").find(".comment-list").append("<p class='no-comments'>There are no comments for this review currently!</p>");
+      };
+      $(this).closest(".comment-info").remove();
+    }.bind(this));
   });
 });
