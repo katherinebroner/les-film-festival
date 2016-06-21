@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   # index page lists 10 most recent reviews overall, AND 5 most recent per category
   resources :movies, only: [:index, :show] do
     resources :reviews, only: [:new, :edit, :create, :update] do
-      resources :comments, only: [:new, :edit, :create, :update, :destroy]
+      resources :comments, only: [:new, :edit, :create, :update]
     end
   end
 
@@ -26,6 +26,9 @@ Rails.application.routes.draw do
 
   # review custom destroy route
   get 'movies/:movie_id/reviews/:id/delete', to: 'reviews#destroy', as: "review_delete"
+
+  # comment custom destroy route
+  get'movies/:movie_id/reviews/:review_id/comments/:id/delete', to: "comments#destroy", as: "comment_delete"
 
   # user
   resources :users, only: [:new, :create, :show]
