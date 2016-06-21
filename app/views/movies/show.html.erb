@@ -16,7 +16,7 @@
         <h3>Judge Reviews</h3>
         <div id="list-of-judge-reviews">
           <% if @movie.judge_reviews.length == 0 %>
-            <p>There are no judge reviews currently!</p>
+            <p class="no-reviews">There are no judge reviews currently!</p>
           <% else %>
             <% @movie.judge_reviews.each do |review| %>
               <%= render partial: "movie_review_info", locals: {review: review} %>
@@ -27,9 +27,9 @@
 
       <div class="movie-box">
         <h3>User Reviews</h3>
-        <div id="list-of-judge-reviews">
+        <div id="list-of-user-reviews">
           <% if @movie.user_reviews.length == 0 %>
-            <p>There are no user reviews currently!</p>
+            <p class="no-reviews">There are no user reviews currently!</p>
           <% else %>
             <% @movie.user_reviews.each do |review| %>
               <%= render partial: "movie_review_info", locals: {review: review} %>

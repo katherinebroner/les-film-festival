@@ -1,4 +1,4 @@
-<div class="review-info">
+<div class="review-info" data="<%= review.user.role %>">
   <%= render partial: "shared/#{number_to_word(review.stars.round)}_star", locals: { size: "15x15"} %><br/>
   <p><%= review.description %></p>
 
@@ -12,7 +12,7 @@
       <li>|</li>
       <li><%= link_to "edit review", edit_movie_review_path(review.movie, review) %></li>
       <li>|</li>
-      <li><%= link_to "delete review", [review.movie, review], method: :delete, data: {confirm: "Are you sure?"} %></li>
+      <li><%= link_to "delete review", review_delete_path(review.movie, review), class: "delete-link", data: {confirm: "Are you sure?"} %></li>
     <% end %>
   </ul>
 
@@ -21,7 +21,7 @@
 
   <div class="comment-list">
     <% if review.comments.length == 0 %>
-      <p>There are no comments for this review currently!</p>
+      <p class="no-comments">There are no comments for this review currently!</p>
     <% else %>
       <% review.comments.each do |comment| %>
         <%= render partial: "movie_comment_info", locals: {comment: comment} %>
@@ -29,11 +29,9 @@
     <% end %>
   </div>
 
-  <div class="comment-list">
-    <div class="leave-comment-info">
-      <% if logged_in? %>
-        <%= link_to "leave a comment", new_movie_review_comment_path(review.movie,review), class: "btn btn-xs btn-success" %>
-      <% end %>
-    </div>
+  <div class="leave-comment-info">
+    <% if logged_in? %>
+      <%= link_to "leave a comment", new_movie_review_comment_path(review.movie,review), class: "btn btn-xs btn-success new-comment-link" %>
+    <% end %>
   </div>
 </div>

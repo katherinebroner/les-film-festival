@@ -1,4 +1,4 @@
-<div class="comment-info">
+<div class="comment-info" data="<%= comment.user.role %>">
   <div>
     <p><%= comment.body %></p>
     <ul class="comment-sub-info">
@@ -11,7 +11,7 @@
       <li>|</li>
       <li><%= link_to "edit comment", edit_movie_review_comment_path(comment.review.movie, comment.review, comment) %></li>
       <li>|</li>
-      <li><%= link_to "delete comment", [comment.review.movie, comment.review, comment], method: :delete, data: {confirm: "Are you sure?"} %></li>
+      <li><%= link_to "delete comment", comment_delete_path(comment.review.movie, comment.review, comment), class: "delete-comment-link", data: {confirm: "Are you sure?"} %></li>
     <% end %>
     </ul>
   </div>

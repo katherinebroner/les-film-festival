@@ -4,7 +4,12 @@ class CommentsController < ApplicationController
     if !logged_in?
       redirect_to root_path
     else
-      @comment = Comment.new
+      if request.xhr?
+        @comment = Comment.new
+        render partial: "comment_form", layout: false, locals: { comment: @comment }
+      else
+        @comment = Comment.new
+      end
     end
   end
 
@@ -23,7 +28,11 @@ class CommentsController < ApplicationController
     @comment.review = Review.find_by(id: params[:review_id])
 
     if @comment.save
-      redirect_to movie_path(@comment.review.movie)
+      if request.xhr?
+        render partial: "movies/movie_comment_info", layout: false, locals: { comment: @comment }
+      else
+        redirect_to movie_path(@comment.review.movie)
+      end
     else
       render 'new'
     end
@@ -45,8 +54,11 @@ class CommentsController < ApplicationController
 
     comment.destroy
 
-    redirect_to movie_path(comment.review.movie)
-
+    if request.xhr?
+      render partial: "comment_delete", layout: false
+    else
+      redirect_to movie_path(comment.review.movie)
+    end
   end
 
   def comment_params

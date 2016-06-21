@@ -14,7 +14,12 @@ class ReviewsController < ApplicationController
     if !logged_in?
       redirect_to root_path
     else
-      @review = Review.new
+      if request.xhr?
+        @review = Review.new
+        render partial: "review_form_ajax", layout: false, locals: {review: @review}
+      else
+        @review = Review.new
+      end
     end
   end
 
@@ -31,8 +36,12 @@ class ReviewsController < ApplicationController
     @review.user = current_user
     @review.movie = Movie.find_by(id: params[:movie_id])
 
-    if @review.save
-      redirect_to movie_path(@review.movie)
+   if @review.save
+      if request.xhr?
+        render partial: "movies/movie_review_info", layout: false, locals: {review: @review}
+      else
+        redirect_to movie_path(@review.movie)
+      end
     else
       render 'new'
     end
@@ -53,7 +62,11 @@ class ReviewsController < ApplicationController
 
     review.destroy
 
-    redirect_to movie_path(review.movie)
+    if request.xhr?
+      render partial: "delete", layout: false
+    else
+      redirect_to movie_path(review.movie)
+    end
 
   end
 
