@@ -9,7 +9,6 @@ $(document).ready(function() {
       type: "GET",
       url: url
     }).done(function(response){
-      // debugger;
       $(this).hide();
       $(this).parent().append(response);
 
@@ -29,10 +28,20 @@ $(document).ready(function() {
       data: data
     }).done(function(response){
       if(response.includes("judge")) {
-        $("#list-of-judge-reviews").append(response);
+        if($("#list-of-judge-reviews").find(".no-reviews").length == 0) {
+          $("#list-of-judge-reviews").append(response);
+        } else {
+          $("#list-of-judge-reviews").find(".no-reviews").hide();
+          $("#list-of-judge-reviews").append(response);
+        };
       } else {
-        $("#list-of-user-reviews").append(response);
-      }
+        if($("#list-of-user-reviews").find(".no-reviews").length == 0) {
+          $("#list-of-user-reviews").append(response);
+        } else {
+          $("#list-of-user-reviews").find(".no-reviews").hide();
+          $("#list-of-user-reviews").append(response);
+        };
+      };
       $("#add-new-review").find("a").show();
       $(this).parent().remove();
     }.bind(this))
@@ -42,13 +51,17 @@ $(document).ready(function() {
   $("#list-of-user-reviews").on("click", ".delete-link", function(e) {
     e.preventDefault();
     var url = $(e.target).attr("href");
-    // var type = $(e.target).attr("data-method");
 
     $.ajax({
       url: url,
       type: "GET"
-    }).done(function(response){
+    }).done(function(response) {
       $(this).closest(".review-info").remove();
+       if($("#list-of-user-reviews").find(".no-reviews").length == 1 && $("#list-of-user-reviews").children(".review-info").length == 0) {
+        $("#list-of-user-reviews").find(".no-reviews").show();
+      } else if($("#list-of-user-reviews").children().length == 0) {
+        $("#list-of-user-reviews").append("<p class='no-reviews'>There are no user reviews currently!</p>");
+      };
     }.bind(this));
   });
 
@@ -60,8 +73,13 @@ $(document).ready(function() {
     $.ajax({
       url: url,
       type: "GET"
-    }).done(function(response){
+    }).done(function(response) {
       $(this).closest(".review-info").remove();
+      if($("#list-of-judge-reviews").find(".no-reviews").length == 1 && $("#list-of-judge-reviews").children(".review-info").length == 0) {
+        $("#list-of-judge-reviews").find(".no-reviews").show();
+      } else if($("#list-of-judge-reviews").children().length == 0) {
+        $("#list-of-judge-reviews").append("<p class='no-reviews'>There are no judge reviews currently!</p>");
+      };
     }.bind(this));
   });
 
@@ -136,6 +154,42 @@ $(document).ready(function() {
       };
       $(this).siblings().show();
       $(this).remove();
+    }.bind(this));
+  });
+
+  // delete comment from user section
+  $("#list-of-user-reviews").on("click", ".delete-comment-link", function(e) {
+    e.preventDefault();
+    var url = $(e.target).attr("href");
+
+    $.ajax({
+      url: url,
+      type: "GET"
+    }).done(function(response) {
+      if($(this).closest(".review-info").find(".no-comments").length == 1 && $(this).closest(".review-info").find(".comment-list").children().length == 2) {
+        $(this).closest(".review-info").find(".no-comments").show();
+      } else if($(this).closest(".review-info").find(".comment-list").children().length == 1) {
+        $(this).closest(".review-info").find(".comment-list").append("<p class='no-comments'>There are no comments for this review currently!</p>");
+      };
+      $(this).closest(".comment-info").remove();
+    }.bind(this));
+  });
+
+  // delete comment from judge section
+  $("#list-of-judge-reviews").on("click", ".delete-comment-link", function(e) {
+    e.preventDefault();
+    var url = $(e.target).attr("href");
+
+    $.ajax({
+      url: url,
+      type: "GET"
+    }).done(function(response) {
+      if($(this).closest(".review-info").find(".no-comments").length == 1 && $(this).closest(".review-info").find(".comment-list").children().length == 2) {
+        $(this).closest(".review-info").find(".no-comments").show();
+      } else if($(this).closest(".review-info").find(".comment-list").children().length == 1) {
+        $(this).closest(".review-info").find(".comment-list").append("<p class='no-comments'>There are no comments for this review currently!</p>");
+      };
+      $(this).closest(".comment-info").remove();
     }.bind(this));
   });
 });

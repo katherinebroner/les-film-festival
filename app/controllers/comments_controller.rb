@@ -54,8 +54,11 @@ class CommentsController < ApplicationController
 
     comment.destroy
 
-    redirect_to movie_path(comment.review.movie)
-
+    if request.xhr?
+      render partial: "comment_delete", layout: false
+    else
+      redirect_to movie_path(comment.review.movie)
+    end
   end
 
   def comment_params
