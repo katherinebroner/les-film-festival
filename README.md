@@ -1,6 +1,6 @@
 # [Lower East Side Film Festival](https://les-film-festival.herokuapp.com/)
 
-Group Memebers
+Group Members
 
 [John Colella](https://github.com/jmcolella)
 [Esther Leytush](https://github.com/mindplace)
