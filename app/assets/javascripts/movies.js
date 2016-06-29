@@ -15,6 +15,13 @@ $(document).ready(function() {
     }.bind(this));
   });
 
+  // cancel review form
+  $("#add-new-review").on("click", ".close-comment", function(e) {
+    e.preventDefault();
+    $("#add-new-review").find(".container").remove();
+    $("#add-new-review").find("a").show();
+  });
+
   // post new review to movie show page
   $("#add-new-review").on("submit", "#review_form", function(e){
     e.preventDefault();
@@ -97,6 +104,14 @@ $(document).ready(function() {
     }.bind(this));
   });
 
+  // cancel comment form for users
+  $("#list-of-user-reviews").on("click", ".close-comment", function(e) {
+    e.preventDefault();
+
+    $(e.target).closest(".leave-comment-info").find(".new-comment-link").show();
+    $(e.target).parent().remove();
+  });
+
   // post comment to user section
   $("#list-of-user-reviews").on("submit", "#comment_form", function(e) {
     e.preventDefault();
@@ -132,6 +147,14 @@ $(document).ready(function() {
       $(this).parent().append(response);
       $(this).hide();
     }.bind(this));
+  });
+
+  // cancel comment form for judges
+  $("#list-of-judge-reviews").on("click", ".close-comment", function(e) {
+    e.preventDefault();
+
+    $(e.target).closest(".leave-comment-info").find(".new-comment-link").show();
+    $(e.target).parent().remove();
   });
 
   // post comment to judge section
