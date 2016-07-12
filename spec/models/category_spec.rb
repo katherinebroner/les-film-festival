@@ -1,139 +1,63 @@
 require 'rails_helper'
 
-RSpec.describe Category, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe Category do
+  let(:category) { Category.create(title: "Drama") }
+
+  let(:movie_1) { Movie.create(title: Faker::Book.title, description: Faker::Lorem.sentence, category_id: category.id) }
+  let(:movie_2) { Movie.create(title: Faker::Book.title, description: Faker::Lorem.sentence, category_id: category.id) }
+
+  let(:user_1) { User.create(username: Faker::Name.first_name, email: Faker::Internet.safe_email, password: "password", role: "judge") }
+  let(:user_2) { User.create(username: Faker::Name.first_name, email: Faker::Internet.safe_email, password: "password", role: "judge") }
+  let(:user_3) { User.create(username: Faker::Name.first_name, email: Faker::Internet.safe_email, password: "password", role: "user") }
+  let(:user_4) { User.create(username: Faker::Name.first_name, email: Faker::Internet.safe_email, password: "password", role: "user") }
+
+  let(:review_1) { Review.create(description: Faker::Lorem.sentence, stars: 3.0, user_id: user_1.id, movie_id: movie_1.id) }
+  let(:review_2) { Review.create(description: Faker::Lorem.sentence, stars: 3.5, user_id: user_3.id, movie_id: movie_1.id) }
+  let(:review_3) { Review.create(description: Faker::Lorem.sentence, stars: 4.0, user_id: user_4.id, movie_id: movie_1.id) }
+  let(:review_4) { Review.create(description: Faker::Lorem.sentence, stars: 5.0, user_id: user_1.id, movie_id: movie_2.id) }
+  let(:review_5) { Review.create(description: Faker::Lorem.sentence, stars: 5.0, user_id: user_2.id, movie_id: movie_2.id) }
+
+
+  describe "#validations" do
+    it "is a valid Category object" do
+      category.should be_valid
+    end
+
+    let(:invalid_category) { Category.create(title: nil) }
+    it "is an invalid Category object" do
+      invalid_category.should_not be_valid
+    end
+  end
+
+  describe "#instance methods" do
+    it "returns five most recent reviews in descending order" do
+      movie_1.reviews << review_1
+      movie_1.reviews << review_2
+      movie_1.reviews << review_3
+      movie_2.reviews << review_4
+      movie_2.reviews << review_5
+
+      category.movies << movie_1
+      category.movies << movie_2
+
+      expect( category.five_most_recent_reviews ).to eq( [review_5, review_4, review_3, review_2, review_1] )
+    end
+
+    it "does not return five most recent reviews in ascending order" do
+       expect( category.five_most_recent_reviews ).not_to eq( [review_1, review_2, review_3, review_4, review_5] )
+    end
+
+    it "returns the movie with the highest average rating" do
+      movie_1.reviews << review_1
+      movie_1.reviews << review_2
+      movie_1.reviews << review_3
+      movie_2.reviews << review_4
+      movie_2.reviews << review_5
+
+      category.movies << movie_1
+      category.movies << movie_2
+
+      expect( category.winner ).to eq( movie_2 )
+    end
+  end
 end
-
-require 'rails_helper'
-
-# describe Game do
-#   let(:game) { Game.new }
-#
-#   describe "#recent" do
-#     it "returns the last fives games" do
-#       10.times { Game.create(user_throw: "rock", computer_throw: "rock") }
-#       expect(Game.recent.length).to eq(5)
-#     end
-#   end
-#
-#   describe "#throw_for_computer!" do
-#     it "sets computer_throw" do
-#       expect{ game.throw_for_computer! }.to change{ game.computer_throw }
-#     end
-#
-#     it "only sets the computer_throw once" do
-#       game.throw_for_computer!
-#       expect{ game.throw_for_computer! }.not_to change{ game.computer_throw }
-#     end
-#   end
-#
-#   describe "#computer_throw" do
-#     describe "validations" do
-#       it "is valid when it's rock" do
-#         game.computer_throw = 'rock'
-#         game.valid?
-#         expect(game.errors[:computer_throw]).to be_empty
-#       end
-#
-#       it "is valid when it's paper" do
-#         game.computer_throw = 'paper'
-#         game.valid?
-#         expect(game.errors[:computer_throw]).to be_empty
-#       end
-#
-#       it "is valid when it's scissors" do
-#         game.computer_throw = 'scissors'
-#         game.valid?
-#         expect(game.errors[:computer_throw]).to be_empty
-#       end
-#
-#       it "is NOT valid when it's pineapple" do
-#         game.computer_throw = 'pineapple'
-#         game.valid?
-#         expect(game.errors[:computer_throw]).to_not be_empty
-#       end
-#     end
-#   end
-#
-#   describe "#user_throw" do
-#     describe "validations" do
-#       it "is valid when it's rock" do
-#         game.user_throw = 'rock'
-#         game.valid?
-#         expect(game.errors[:user_throw]).to be_empty
-#       end
-#
-#       it "is valid when it's paper" do
-#         game.user_throw = 'paper'
-#         game.valid?
-#         expect(game.errors[:user_throw]).to be_empty
-#       end
-#
-#       it "is valid when it's scissors" do
-#         game.user_throw = 'scissors'
-#         game.valid?
-#         expect(game.errors[:user_throw]).to be_empty
-#       end
-#
-#       it "is NOT valid when it's pineapple" do
-#         game.user_throw = 'pineapple'
-#         game.valid?
-#         expect(game.errors[:user_throw]).to_not be_empty
-#       end
-#     end
-#   end
-#
-#   describe "#winner" do
-#     context "when computer_throw is paper" do
-#       before do
-#         game.computer_throw = 'paper'
-#       end
-#
-#       it "determines computer won if user_throw is rock" do
-#         game.user_throw = 'rock'
-#         expect(game.winner).to eq('computer')
-#       end
-#
-#       it "determines user won if user_throw is scissors" do
-#         game.user_throw = 'scissors'
-#         expect(game.winner).to eq('user')
-#       end
-#     end
-#
-#     context "when computer throws rock" do
-#       before do
-#         game.computer_throw = 'rock'
-#       end
-#
-#       it "determines computer won if user_throw is scissors" do
-#         game.user_throw = 'scissors'
-#         expect(game.winner).to eq('computer')
-#       end
-#
-#       it "determines user won if user_throw is paper" do
-#         game.user_throw = 'paper'
-#         expect(game.winner).to eq('user')
-#       end
-#     end
-#
-#     context "when computer throws scissors" do
-#       before do
-#         game.computer_throw = 'scissors'
-#       end
-#
-#       it "determines computer won if user_throw is rock" do
-#         game.user_throw = 'rock'
-#         expect(game.winner).to eq('user')
-#       end
-#
-#       it "determines user won if user_throw is paper" do
-#         game.user_throw = 'paper'
-#         expect(game.winner).to eq('computer')
-#       end
-#     end
-#
-#     describe "validations" do
-#        #Already Validated Everything Necessary
-#     end
-#   end
-# end
